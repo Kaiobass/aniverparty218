@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Party 218</title>
+    <style>
+        :root {
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-color: #25d366;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            25% { color: #ff00ff; }
+            50% { color: #00ffff; }
+            75% { color: #ffff00; }
+            100% { color: #ff0000; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Cabeçalho */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            animation: rainbow 5s linear infinite;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: -2px;
+        }
+
+        /* Botões de Navegação */
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            color: white;
+            border: 2px solid transparent;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .tab-btn.active {
+            border-color: var(--accent-color);
+            background: rgba(37, 211, 102, 0.1);
+            color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .tab-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Conteúdo do Cardápio */
+        .menu-container {
+            width: 90%;
+            max-width: 800px;
+            display: none; /* Escondido por padrão */
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .menu-container.active {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Itens do Cardápio */
+        .menu-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover {
+            transform: translateX(10px);
+            border-left-color: var(--accent-color);
+            background: #252525;
+        }
+
+        .item-info {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .item-info h3 {
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
+
+        .item-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .menu-item:hover .item-img {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .header img { width: 60px; height: 60px; }
+            .tab-btn { padding: 10px 20px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <img src="https://snipboard.io/DxFNsC.jpg" alt="Logo Party 218">
+        <h1>Party 218</h1>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('bebidas')">Bebidas </button>
+        <button class="tab-btn" onclick="openTab('comidas')">Comidas </button>
+    </div>
+
+    <div id="bebidas" class="menu-container active">
+        
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Gela Crânio</h3>
+                <p>Nossa bebida ultra gelada com mix de frutas e segredo da sopa e do kaiobas em nossos copos ultra personalissimos.</p>
+            </div>
+            <img src="https://snipboard.io/5PyVgA.jpg" class="item-img" alt="Gela Crânio">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Pitu</h3>
+                <p>bebida que vai te  dar água na boca e te levar ao céu com apenas um shoot ou ao inferno</p>
+            </div>
+            <img src="https://snipboard.io/3Pzt6O.jpg" class="item-img" alt="Bebida">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Dreher</h3>
+                <p>A famosa bebida do vaqueiro.</p>
+            </div>
+            <img src="https://snipboard.io/4Ft6Mg.jpg" class="item-img" alt="Bebida">
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Whisky</h3>
+                <p>A antiga bebida dos monges da Península Ibérica</p>
+            </div>
+            <img src="https://snipboard.io/QAOKMX.jpg" class="item-img" alt="Bebida">
+        </div>
+<div class="menu-item">
+            <div class="item-info">
+                <h3>Agua de Coco</h3>
+                <p>a melhor agua do mundo diretamento do coco de algum lugar do Brasil.</p>
+            </div>
+            <img src="https://snipboard.io/BciJjm.jpg" class="item-img" alt="Bebida">
+        </div>
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Sprit e Energetico</h3>
+                <p>Para os que não vão beber bebidas alcoolicas ou para misturar.</p>
+            </div>
+            <img src="https://snipboard.io/Kv82ol.jpg" class="item-img" alt="Bebida">
+        </div>
+
+    </div>
+
+    <div id="comidas" class="menu-container">
+        
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Cachorro Quente</h3>
+                <p>Cachorro quente delicioso feito pelo mestre cuca com tempero especial e molho surpresa.</p>
+            </div>
+            <img src="https://snipboard.io/omdCY2.jpg" class="item-img" alt="Comida">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Fricassê Bazinha</h3>
+                <p>Fricassê feito pela maioral uma delicia ninguem conseguiria explicar tamanho sabor</p>
+            </div>
+            <img src="https://snipboard.io/V2zhyo.jpg" class="item-img" alt="Comida">
+        </div>
+<div class="menu-item">
+            <div class="item-info">
+                <h3>Docinhos da Poly</h3>
+                <p>brigadeiros e doces feito pela amada do dev da galera vulgo kaiobas</p>
+            </div>
+            <img src="https://snipboard.io/3EksAr.jpg" class="item-img" alt="Comida">
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            // Remove active de todos os containers
+            const containers = document.querySelectorAll('.menu-container');
+            containers.forEach(container => container.classList.remove('active'));
+
+            // Remove active de todos os botões
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Adiciona active no selecionado
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
