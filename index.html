@@ -6,29 +6,36 @@
     <title>Cardápio Party 218</title>
     <style>
         :root {
-            --dark-bg: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-color: #e0e0e0;
+            --dark-bg: #0b0b0b;
+            --card-bg: rgba(30, 30, 30, 0.85);
+            --text-color: #ffffff;
             --accent-color: #25d366;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Transição elástica para parecer natural */
+            --fluid-speed: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ANIMAÇÃO DO LOGO */
+        @keyframes pulse-beat {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-color)); }
+            50% { transform: scale(1.1) rotate(2deg); filter: drop-shadow(0 0 30px var(--accent-color)); }
+        }
+
+        /* ANIMAÇÃO DAS FRASES */
+        @keyframes float-party {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) rotate(15deg); opacity: 0; }
         }
 
         @keyframes rainbow {
-            0% { color: #ff0000; }
-            25% { color: #ff00ff; }
-            50% { color: #00ffff; }
-            75% { color: #ffff00; }
-            100% { color: #ff0000; }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { color: #ff0000; text-shadow: 0 0 15px #ff0000; }
+            33% { color: #00ffff; text-shadow: 0 0 15px #00ffff; }
+            66% { color: #ffff00; text-shadow: 0 0 15px #ffff00; }
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Arial Black', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-color);
             margin: 0;
@@ -36,139 +43,133 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Cabeçalho */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding: 40px 20px;
+        /* FUNDO ANIMADO */
+        .party-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 800px;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
         }
 
-        .header img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        .phrase {
+            position: absolute;
+            font-weight: 900;
+            text-transform: uppercase;
+            animation: float-party linear infinite;
+            opacity: 0;
         }
 
-        .header h1 {
-            font-size: 3rem;
-            margin: 0;
-            animation: rainbow 5s linear infinite;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-            letter-spacing: -2px;
-        }
+        .p1 { left: 5%; animation-duration: 7s; color: #ff00ff; }
+        .p2 { left: 25%; animation-duration: 10s; animation-delay: 2s; color: #00ffff; }
+        .p3 { left: 45%; animation-duration: 8s; animation-delay: 4s; color: #25d366; }
+        .p4 { left: 65%; animation-duration: 12s; color: #ffff00; }
+        .p5 { left: 85%; animation-duration: 9s; animation-delay: 1s; color: #ff4500; }
 
-        /* Botões de Navegação */
-        .nav-tabs {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+        .header { position: relative; z-index: 10; text-align: center; padding: 40px 20px; }
+        .header img { width: 180px; height: 180px; border-radius: 50%; animation: pulse-beat 2s infinite; object-fit: cover; }
+        .header h1 { font-size: 3.5rem; margin: 15px 0; animation: rainbow 4s linear infinite; }
 
+        .nav-tabs { position: relative; z-index: 10; display: flex; gap: 15px; margin-bottom: 40px; }
         .tab-btn {
-            background: var(--card-bg);
-            color: white;
-            border: 2px solid transparent;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1.1rem;
+            background: #222; color: white; border: 2px solid #444; padding: 15px 35px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
+        .tab-btn.active { border-color: var(--accent-color); background: var(--accent-color); color: black; box-shadow: 0 0 20px var(--accent-color); }
 
-        .tab-btn.active {
-            border-color: var(--accent-color);
-            background: rgba(37, 211, 102, 0.1);
-            color: var(--accent-color);
-            box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
-        }
-
-        .tab-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Conteúdo do Cardápio */
+        /* ====== LOGICA DO EFEITO FLUIDO ====== */
         .menu-container {
+            position: relative;
+            z-index: 10;
             width: 90%;
-            max-width: 800px;
-            display: none; /* Escondido por padrão */
-            animation: fadeInUp 0.5s ease forwards;
+            max-width: 600px;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 50px;
         }
 
-        .menu-container.active {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+        .menu-container.active { display: flex; }
+
+        /* Quando o mouse entra na lista, todos os itens "encolhem" */
+        .menu-container:hover .menu-item {
+            transform: scale(0.92);
+            opacity: 0.4;
+            filter: blur(1px);
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Mas o item específico que você está em cima cresce e brilha */
+        .menu-container .menu-item:hover {
+            transform: scale(1.1); /* Fica maior */
+            opacity: 1; /* Fica nítido */
+            filter: blur(0);
+            border-color: var(--accent-color);
+            background: rgba(45, 45, 45, 0.95);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 211, 102, 0.2);
+            z-index: 20; /* Fica na frente dos outros */
         }
 
-        /* Itens do Cardápio */
         .menu-item {
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: var(--transition);
-            border-left: 4px solid transparent;
+            border: 2px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            transition: var(--fluid-speed); /* Transição suave e elástica */
+            cursor: pointer;
         }
 
-        .menu-item:hover {
-            transform: translateX(10px);
-            border-left-color: var(--accent-color);
-            background: #252525;
+        /* Efeito de clique (apertar) */
+        .menu-item:active {
+            transform: scale(0.95) !important;
+            background: var(--accent-color);
         }
 
-        .item-info {
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .item-info h3 {
-            margin: 0 0 5px 0;
-            color: #fff;
-        }
-
-        .item-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
+        .item-info { flex: 1; padding-right: 20px; }
+        .item-info h3 { margin: 0; font-size: 1.4rem; color: #fff; }
+        .item-info p { margin: 8px 0 0; font-size: 0.95rem; color: #ccc; font-family: sans-serif; line-height: 1.4; }
 
         .item-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
+            width: 90px;
+            height: 90px;
+            border-radius: 18px;
             object-fit: cover;
-            transition: var(--transition);
+            transition: var(--fluid-speed);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
+        /* A imagem também gira um pouco no foco */
         .menu-item:hover .item-img {
-            transform: scale(1.2) rotate(5deg);
+            transform: scale(1.1) rotate(5deg);
         }
 
-        /* Responsividade */
         @media (max-width: 600px) {
-            .header h1 { font-size: 2rem; }
-            .header img { width: 60px; height: 60px; }
-            .tab-btn { padding: 10px 20px; font-size: 0.9rem; }
+            .header h1 { font-size: 2.5rem; }
+            .header img { width: 140px; height: 140px; }
+            /* No mobile, o efeito de afastar é menos agressivo para facilitar o toque */
+            .menu-container:hover .menu-item { transform: scale(0.96); }
+            .menu-container .menu-item:hover { transform: scale(1.05); }
         }
     </style>
 </head>
 <body>
+
+    <div class="party-bg">
+        <div class="phrase p1">PARTY 218! 🚀</div>
+        <div class="phrase p2">GELA CRÂNIO 🧊</div>
+        <div class="phrase p3">ATURA OU SURTA 🤪</div>
+        <div class="phrase p4"> ORIGINAL NUNCA CÓPIA🔥</div>
+        <div class="phrase p5">SEGUE O BAILE!🎶🔊</div>
+    </div>
 
     <header class="header">
         <img src="https://snipboard.io/DxFNsC.jpg" alt="Logo Party 218">
@@ -176,26 +177,25 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="openTab('bebidas')">Bebidas </button>
-        <button class="tab-btn" onclick="openTab('comidas')">Comidas </button>
+        <button class="tab-btn active" onclick="openTab('bebidas')">Bebidas</button>
+        <button class="tab-btn" onclick="openTab('comidas')">Comidas</button>
     </div>
 
     <div id="bebidas" class="menu-container active">
-        
         <div class="menu-item">
             <div class="item-info">
                 <h3>Gela Crânio</h3>
-                <p>Nossa bebida ultra gelada com mix de frutas e segredo da sopa e do kaiobas em nossos copos ultra personalissimos.</p>
+                <p>Nossa bebida ultra gelada com mix de frutas e segredo da sopa e do kaiobas.</p>
             </div>
-            <img src="https://snipboard.io/5PyVgA.jpg" class="item-img" alt="Gela Crânio">
+            <img src="https://snipboard.io/5PyVgA.jpg" class="item-img">
         </div>
 
         <div class="menu-item">
             <div class="item-info">
                 <h3>Pitu</h3>
-                <p>bebida que vai te  dar água na boca e te levar ao céu com apenas um shoot ou ao inferno</p>
+                <p>Bebida que vai te dar água na boca e te levar ao céu ou ao inferno.</p>
             </div>
-            <img src="https://snipboard.io/3Pzt6O.jpg" class="item-img" alt="Bebida">
+            <img src="https://snipboard.io/3Pzt6O.jpg" class="item-img">
         </div>
 
         <div class="menu-item">
@@ -203,103 +203,72 @@
                 <h3>Dreher</h3>
                 <p>A famosa bebida do vaqueiro.</p>
             </div>
-            <img src="https://snipboard.io/4Ft6Mg.jpg" class="item-img" alt="Bebida">
+            <img src="https://snipboard.io/4Ft6Mg.jpg" class="item-img">
         </div>
+
         <div class="menu-item">
             <div class="item-info">
                 <h3>Whisky</h3>
-                <p>A antiga bebida dos monges da Península Ibérica</p>
+                <p>A antiga bebida dos monges da Península Ibérica.</p>
             </div>
-            <img src="https://snipboard.io/QAOKMX.jpg" class="item-img" alt="Bebida">
+            <img src="https://snipboard.io/QAOKMX.jpg" class="item-img">
         </div>
-<div class="menu-item">
-            <div class="item-info">
-                <h3>Agua de Coco</h3>
-                <p>a melhor agua do mundo diretamento do coco de algum lugar do Brasil.</p>
-            </div>
-            <img src="https://snipboard.io/BciJjm.jpg" class="item-img" alt="Bebida">
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Vodka normal e de SABOR sem ser ENERGETICO</h3>
-                <p>Aquela que deixa a linguinha colorida.</p>
-            </div>
-            <img src="https://snipboard.io/T1QOj6.jpg" class="item-img" alt="Bebida">
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Gin</h3>
-                <p>Bebida que as vezes nos confundimos com perfume,otimo pra quem quer se embriagar.</p>
-            </div>
-            <img src="https://snipboard.io/cW4NZr.jpg" class="item-img" alt="Bebida">
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Coquinha geladinha</h3>
-                <p>Coca refrescante para acompanhar refeições.</p>
-            </div>
-            <img src="https://snipboard.io/bJpZ8j.jpg" class="item-img" alt="Bebida">
-        </div>
-         <div class="menu-item">
-            <div class="item-info">
-                <h3>Palhinha</h3>
-                <p>Bebida de menta boa pra se afogar e nunca mais parar de beber.</p>
-            </div>
-            <img src="https://snipboard.io/onCzwg.jpg" class="item-img" alt="Bebida">
-        </div>
-        <div class="menu-item">
-            <div class="item-info">
-                <h3>Sprit e Energetico</h3>
-                <p>Para os que não vão beber bebidas alcoolicas ou para misturar.</p>
-            </div>
-            <img src="https://snipboard.io/Kv82ol.jpg" class="item-img" alt="Bebida">
-        </div>
-
-    </div>
-
-    <div id="comidas" class="menu-container">
         
         <div class="menu-item">
             <div class="item-info">
-                <h3>Cachorro Quente</h3>
-                <p>Cachorro quente delicioso feito pelo mestre cuca com tempero especial e molho surpresa.</p>
+                <h3>Agua de Coco</h3>
+                <p>Diretamente do pé para o seu copo.</p>
             </div>
-            <img src="https://snipboard.io/omdCY2.jpg" class="item-img" alt="Comida">
+            <img src="https://snipboard.io/BciJjm.jpg" class="item-img">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Vodka de Sabor</h3>
+                <p>Aquela que deixa a linguinha colorida.</p>
+            </div>
+            <img src="https://snipboard.io/T1QOj6.jpg" class="item-img">
+        </div>
+    </div>
+
+    <div id="comidas" class="menu-container">
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Cachorro Quente</h3>
+                <p>Delicioso com tempero especial e molho surpresa.</p>
+            </div>
+            <img src="https://snipboard.io/omdCY2.jpg" class="item-img">
         </div>
 
         <div class="menu-item">
             <div class="item-info">
                 <h3>Fricassê Bazinha</h3>
-                <p>Fricassê feito pela maioral uma delicia ninguem conseguiria explicar tamanho sabor</p>
+                <p>Fricassê feito pela maioral, sabor inexplicável.</p>
             </div>
-            <img src="https://snipboard.io/V2zhyo.jpg" class="item-img" alt="Comida">
+            <img src="https://snipboard.io/V2zhyo.jpg" class="item-img">
         </div>
-<div class="menu-item">
+
+        <div class="menu-item">
             <div class="item-info">
                 <h3>Docinhos da Poly</h3>
-                <p>brigadeiros e doces feito pela amada do dev da galera vulgo kaiobas</p>
+                <p>Brigadeiros feitos com muito amor.</p>
             </div>
-            <img src="https://snipboard.io/3EksAr.jpg" class="item-img" alt="Comida">
+            <img src="https://snipboard.io/3EksAr.jpg" class="item-img">
         </div>
     </div>
 
     <script>
         function openTab(tabName) {
-            // Remove active de todos os containers
             const containers = document.querySelectorAll('.menu-container');
-            containers.forEach(container => container.classList.remove('active'));
+            containers.forEach(c => c.classList.remove('active'));
 
-            // Remove active de todos os botões
             const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons.forEach(b => b.classList.remove('active'));
 
-            // Adiciona active no selecionado
             document.getElementById(tabName).classList.add('active');
             event.currentTarget.classList.add('active');
         }
     </script>
 
 </body>
-
 </html>
-
