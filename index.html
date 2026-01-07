@@ -7,35 +7,33 @@
     <style>
         :root {
             --dark-bg: #0b0b0b;
-            --card-bg: rgba(30, 30, 30, 0.85);
+            --card-bg: #1a1a1a;
             --text-color: #ffffff;
             --accent-color: #25d366;
-            /* Transição elástica para parecer natural */
-            --fluid-speed: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* ANIMAÇÃO DO LOGO */
+        /* ANIMAÇÕES DE FUNDO */
         @keyframes pulse-beat {
             0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-color)); }
-            50% { transform: scale(1.1) rotate(2deg); filter: drop-shadow(0 0 30px var(--accent-color)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 20px var(--accent-color)); }
         }
 
-        /* ANIMAÇÃO DAS FRASES */
         @keyframes float-party {
-            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% { transform: translateY(-20vh) rotate(15deg); opacity: 0; }
+            0% { transform: translateY(105vh); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh); opacity: 0; }
         }
 
         @keyframes rainbow {
-            0%, 100% { color: #ff0000; text-shadow: 0 0 15px #ff0000; }
-            33% { color: #00ffff; text-shadow: 0 0 15px #00ffff; }
-            66% { color: #ffff00; text-shadow: 0 0 15px #ffff00; }
+            0%, 100% { color: #ff0000; }
+            33% { color: #00ffff; }
+            66% { color: #ffff00; }
         }
 
         body {
-            font-family: 'Arial Black', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--dark-bg);
             color: var(--text-color);
             margin: 0;
@@ -47,7 +45,7 @@
             min-height: 100vh;
         }
 
-        /* FUNDO ANIMADO */
+        /* FRASES FLUTUANTES */
         .party-bg {
             position: fixed;
             top: 0;
@@ -64,26 +62,29 @@
             text-transform: uppercase;
             animation: float-party linear infinite;
             opacity: 0;
+            font-size: 1.2rem;
+            white-space: nowrap;
         }
 
-        .p1 { left: 5%; animation-duration: 7s; color: #ff00ff; }
-        .p2 { left: 25%; animation-duration: 10s; animation-delay: 2s; color: #00ffff; }
-        .p3 { left: 45%; animation-duration: 8s; animation-delay: 4s; color: #25d366; }
-        .p4 { left: 65%; animation-duration: 12s; color: #ffff00; }
-        .p5 { left: 85%; animation-duration: 9s; animation-delay: 1s; color: #ff4500; }
+        .p1 { left: 10%; animation-duration: 12s; color: #ff00ff; }
+        .p2 { left: 30%; animation-duration: 15s; animation-delay: 2s; color: #00ffff; }
+        .p3 { left: 60%; animation-duration: 10s; color: #25d366; }
+        .p4 { left: 85%; animation-duration: 18s; animation-delay: 4s; color: #ffff00; }
 
+        /* HEADER */
         .header { position: relative; z-index: 10; text-align: center; padding: 40px 20px; }
-        .header img { width: 180px; height: 180px; border-radius: 50%; animation: pulse-beat 2s infinite; object-fit: cover; }
-        .header h1 { font-size: 3.5rem; margin: 15px 0; animation: rainbow 4s linear infinite; }
+        .header img { width: 180px; height: 180px; border-radius: 50%; animation: pulse-beat 3s infinite; object-fit: cover; }
+        .header h1 { font-size: 3rem; margin: 15px 0; animation: rainbow 5s linear infinite; text-transform: uppercase; letter-spacing: -2px; }
 
-        .nav-tabs { position: relative; z-index: 10; display: flex; gap: 15px; margin-bottom: 40px; }
+        /* NAVEGAÇÃO */
+        .nav-tabs { position: relative; z-index: 10; display: flex; gap: 10px; margin-bottom: 30px; }
         .tab-btn {
-            background: #222; color: white; border: 2px solid #444; padding: 15px 35px;
-            border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s;
+            background: #222; color: white; border: 2px solid #333; padding: 12px 30px;
+            border-radius: 30px; cursor: pointer; font-weight: bold; transition: var(--transition);
         }
         .tab-btn.active { border-color: var(--accent-color); background: var(--accent-color); color: black; box-shadow: 0 0 20px var(--accent-color); }
 
-        /* ====== LOGICA DO EFEITO FLUIDO ====== */
+        /* CONTAINER DO CARDÁPIO */
         .menu-container {
             position: relative;
             z-index: 10;
@@ -91,73 +92,62 @@
             max-width: 600px;
             display: none;
             flex-direction: column;
-            gap: 20px;
-            padding-bottom: 50px;
+            gap: 15px; /* Gap fixo que será alterado pelo movimento */
+            padding-bottom: 80px;
         }
-
         .menu-container.active { display: flex; }
 
-        /* Quando o mouse entra na lista, todos os itens "encolhem" */
-        .menu-container:hover .menu-item {
-            transform: scale(0.92);
-            opacity: 0.4;
-            filter: blur(1px);
-        }
-
-        /* Mas o item específico que você está em cima cresce e brilha */
-        .menu-container .menu-item:hover {
-            transform: scale(1.1); /* Fica maior */
-            opacity: 1; /* Fica nítido */
-            filter: blur(0);
-            border-color: var(--accent-color);
-            background: rgba(45, 45, 45, 0.95);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 211, 102, 0.2);
-            z-index: 20; /* Fica na frente dos outros */
-        }
-
+        /* === EFEITO DOMINÓ (MOVIMENTO) === */
         .menu-item {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 25px;
+            padding: 18px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 2px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            transition: var(--fluid-speed); /* Transição suave e elástica */
+            border: 2px solid transparent;
+            transition: var(--transition); /* Transição suave em tudo */
             cursor: pointer;
+            position: relative;
         }
 
-        /* Efeito de clique (apertar) */
-        .menu-item:active {
-            transform: scale(0.95) !important;
-            background: var(--accent-color);
+        /* O item selecionado cresce e brilha */
+        .menu-item.active-hover {
+            transform: scale(1.08);
+            border-color: var(--accent-color);
+            background: #252525;
+            z-index: 20;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Os itens acima movem para cima */
+        .menu-item.move-up {
+            transform: translateY(-15px) scale(0.96);
+            opacity: 0.7;
+        }
+
+        /* Os itens abaixo movem para baixo */
+        .menu-item.move-down {
+            transform: translateY(15px) scale(0.96);
+            opacity: 0.7;
         }
 
         .item-info { flex: 1; padding-right: 20px; }
-        .item-info h3 { margin: 0; font-size: 1.4rem; color: #fff; }
-        .item-info p { margin: 8px 0 0; font-size: 0.95rem; color: #ccc; font-family: sans-serif; line-height: 1.4; }
+        .item-info h3 { margin: 0; font-size: 1.3rem; color: #fff; }
+        .item-info p { margin: 6px 0 0; font-size: 0.95rem; color: #aaa; line-height: 1.3; }
 
         .item-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 18px;
+            width: 85px;
+            height: 85px;
+            border-radius: 15px;
             object-fit: cover;
-            transition: var(--fluid-speed);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        /* A imagem também gira um pouco no foco */
-        .menu-item:hover .item-img {
-            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
 
         @media (max-width: 600px) {
             .header h1 { font-size: 2.5rem; }
-            .header img { width: 140px; height: 140px; }
-            /* No mobile, o efeito de afastar é menos agressivo para facilitar o toque */
-            .menu-container:hover .menu-item { transform: scale(0.96); }
-            .menu-container .menu-item:hover { transform: scale(1.05); }
+            .header img { width: 150px; height: 150px; }
+            .menu-item.active-hover { transform: scale(1.05); }
         }
     </style>
 </head>
@@ -165,10 +155,9 @@
 
     <div class="party-bg">
         <div class="phrase p1">PARTY 218! 🚀</div>
-        <div class="phrase p2">GELA CRÂNIO 🧊</div>
-        <div class="phrase p3">ATURA OU SURTA 🤪</div>
-        <div class="phrase p4"> ORIGINAL NUNCA CÓPIA🔥</div>
-        <div class="phrase p5">SEGUE O BAILE!🎶🔊</div>
+        <div class="phrase p2">SENTE O GRAVE 🔊</div>
+        <div class="phrase p3">É HOJE! 🔥</div>
+        <div class="phrase p4">CHEERS! 🍹</div>
     </div>
 
     <header class="header">
@@ -213,11 +202,11 @@
             </div>
             <img src="https://snipboard.io/QAOKMX.jpg" class="item-img">
         </div>
-        
+
         <div class="menu-item">
             <div class="item-info">
                 <h3>Agua de Coco</h3>
-                <p>Diretamente do pé para o seu copo.</p>
+                <p>A melhor água do mundo diretamente do coco.</p>
             </div>
             <img src="https://snipboard.io/BciJjm.jpg" class="item-img">
         </div>
@@ -229,13 +218,45 @@
             </div>
             <img src="https://snipboard.io/T1QOj6.jpg" class="item-img">
         </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Gin</h3>
+                <p>Às vezes nos confundimos com perfume, ótimo pra se embriagar.</p>
+            </div>
+            <img src="https://snipboard.io/cW4NZr.jpg" class="item-img">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Coquinha geladinha</h3>
+                <p>Coca refrescante para acompanhar refeições.</p>
+            </div>
+            <img src="https://snipboard.io/bJpZ8j.jpg" class="item-img">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Palhinha</h3>
+                <p>Bebida de menta boa pra se afogar e nunca mais parar de beber.</p>
+            </div>
+            <img src="https://snipboard.io/onCzwg.jpg" class="item-img">
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <h3>Sprit e Energetico</h3>
+                <p>Para os que não vão beber bebidas alcoolicas ou para misturar.</p>
+            </div>
+            <img src="https://snipboard.io/Kv82ol.jpg" class="item-img">
+        </div>
     </div>
 
     <div id="comidas" class="menu-container">
         <div class="menu-item">
             <div class="item-info">
                 <h3>Cachorro Quente</h3>
-                <p>Delicioso com tempero especial e molho surpresa.</p>
+                <p>Delicioso feito pelo mestre cuca com tempero especial.</p>
             </div>
             <img src="https://snipboard.io/omdCY2.jpg" class="item-img">
         </div>
@@ -243,7 +264,7 @@
         <div class="menu-item">
             <div class="item-info">
                 <h3>Fricassê Bazinha</h3>
-                <p>Fricassê feito pela maioral, sabor inexplicável.</p>
+                <p>Fricassê feito pela maioral uma delicia inexplicável.</p>
             </div>
             <img src="https://snipboard.io/V2zhyo.jpg" class="item-img">
         </div>
@@ -251,23 +272,58 @@
         <div class="menu-item">
             <div class="item-info">
                 <h3>Docinhos da Poly</h3>
-                <p>Brigadeiros feitos com muito amor.</p>
+                <p>Brigadeiros e doces feitos pela amada do dev da galera.</p>
             </div>
             <img src="https://snipboard.io/3EksAr.jpg" class="item-img">
         </div>
     </div>
 
     <script>
+        // Função de trocar Abas
         function openTab(tabName) {
             const containers = document.querySelectorAll('.menu-container');
             containers.forEach(c => c.classList.remove('active'));
-
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(b => b.classList.remove('active'));
-
             document.getElementById(tabName).classList.add('active');
             event.currentTarget.classList.add('active');
+            initDominoEffect(); // Reinicia os listeners para a nova aba
         }
+
+        // Função do Efeito Dominó
+        function initDominoEffect() {
+            const items = document.querySelectorAll('.menu-item');
+            
+            items.forEach((item, index) => {
+                // Evento para PC (Mouse) e Mobile (Toque)
+                const startEffect = () => {
+                    items.forEach((other, i) => {
+                        if (i < index) {
+                            other.classList.add('move-up');
+                        } else if (i > index) {
+                            other.classList.add('move-down');
+                        }
+                    });
+                    item.classList.add('active-hover');
+                };
+
+                const endEffect = () => {
+                    items.forEach(other => {
+                        other.classList.remove('move-up', 'move-down', 'active-hover');
+                    });
+                };
+
+                item.addEventListener('mouseenter', startEffect);
+                item.addEventListener('mouseleave', endEffect);
+                
+                // Suporte para toque no celular
+                item.addEventListener('touchstart', startEffect);
+                item.addEventListener('touchend', endEffect);
+            });
+        }
+
+        // Inicializa o efeito ao carregar
+        initDominoEffect();
     </script>
 
 </body>
